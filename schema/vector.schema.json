@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ZeroNineSolver/cow-score-test-set/schema/vector.schema.json",
+  "title": "CoW solver score conformance test case",
+  "description": "One order, its fee policies, the native prices and one solution, with the protocol fees and score that cowprotocol/services computes at the pinned commit. All amounts are decimal strings of integer wei. Native prices are decimal strings of integer wei of native token per 1e18 atoms of the token (the autopilot's normalized price).",
+  "type": "object",
+  "required": ["id", "version", "oracle", "class", "order", "native_prices", "solution", "expected"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "description": "Stable identifier, e.g. sell-surplus-partial-0007."},
+    "version": {"type": "string", "description": "Schema version, semver."},
+    "oracle": {
+      "type": "object", "required": ["repo", "commit", "generated_by"], "additionalProperties": false,
+      "properties": {
+        "repo": {"const": "cowprotocol/services"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "services_version": {"type": "string", "description": "Cargo package version of the autopilot at the commit, if any."},
+        "generated_by": {"enum": ["hand", "harness"], "description": "hand: built and cited by a person; harness: emitted by the generator."},
+        "citations": {"type": "array", "items": {"type": "string"}, "description": "path:line-range in services that justifies each expected value."}
+      }
+    },
+    "class": {
+      "type": "array", "minItems": 1, "items": {"enum": [
+        "sell", "buy", "in-market", "out-of-market", "full-fill", "partial-fill",
+        "policy-surplus", "policy-price-improvement", "policy-volume", "policy-none", "policy-order",
+        "cap-max-volume-factor", "cap-partner",
+        "boundary-native-overflow", "boundary-sum-overflow", "boundary-widening", "roundtrip-rounding", "zero-score",
+        "floor-boundary", "ceil-boundary"
+      ]},
+      "description": "The vector classes this case covers. The coverage table counts one row per class."
+    },
+    "order": {
+      "type": "object", "required": ["uid", "side", "sell_token", "buy_token", "sell_amount", "buy_amount", "partially_fillable", "fee_policies"],
+      "additionalProperties": false,
+      "properties": {
+        "uid": {"type": "string"},
+        "side": {"enum": ["sell", "buy"], "description": "sell: sell_amount is fixed and buy_amount is the limit. buy: buy_amount is fixed and sell_amount is the limit."},
+        "sell_token": {"type": "string", "pattern": "^0x[0-9a-fA-F]{40}$"},
+        "buy_token": {"type": "string", "pattern": "^0x[0-9a-fA-F]{40}$"},
+        "sell_amount": {"$ref": "#/$defs/wei", "description": "Signed limit sell amount, wei of sell_token."},
+        "buy_amount": {"$ref": "#/$defs/wei", "description": "Signed limit buy amount, wei of buy_token."},
+        "partially_fillable": {"type": "boolean"},
+        "available": {"$ref": "#/$defs/wei", "description": "Remaining target amount for a partially fillable order (sell side for sell, buy side for buy). Absent for fill-or-kill."},
+        "quote": {
+          "type": "object", "required": ["sell_amount", "buy_amount", "fee"], "additionalProperties": false,
+          "description": "The quote the autopilot attached, if any. fee is in the sell token.",
+          "properties": {"sell_amount": {"$ref": "#/$defs/wei"}, "buy_amount": {"$ref": "#/$defs/wei"}, "fee": {"$ref": "#/$defs/wei"}}
+        },
+        "fee_policies": {
+          "type": "array",
+          "description": "In the order the autopilot attached them. The driver applies them in this order.",
+          "items": {"oneOf": [
+            {"type": "object", "required": ["kind", "cip", "factor", "max_volume_factor"], "additionalProperties": false,
+             "properties": {"kind": {"const": "surplus"}, "cip": {"type": "string"}, "factor": {"$ref": "#/$defs/factor"}, "max_volume_factor": {"$ref": "#/$defs/factor"}}},
+            {"type": "object", "required": ["kind", "cip", "factor", "max_volume_factor"], "additionalProperties": false,
+             "properties": {"kind": {"const": "price_improvement"}, "cip": {"type": "string"}, "factor": {"$ref": "#/$defs/factor"}, "max_volume_factor": {"$ref": "#/$defs/factor"}}},
+            {"type": "object", "required": ["kind", "cip", "factor"], "additionalProperties": false,
+             "properties": {"kind": {"const": "volume"}, "cip": {"type": "string"}, "factor": {"$ref": "#/$defs/factor"}}}
+          ]}
+        }
+      }
+    },
+    "native_prices": {
+      "type": "object",
+      "description": "Token address to normalized native price, wei of native token per 1e18 atoms of the token. The autopilot forces the wrapped native token to 1e18.",
+      "patternProperties": {"^0x[0-9a-fA-F]{40}$": {"$ref": "#/$defs/wei"}},
+      "additionalProperties": false
+    },
+    "solution": {
+      "type": "object", "required": ["executed", "solver_fee", "uniform_clearing_prices"], "additionalProperties": false,
+      "properties": {
+        "executed": {"$ref": "#/$defs/wei", "description": "Executed target amount as the solver proposed it, before protocol fees: sell amount for a sell order, buy amount for a buy order."},
+        "solver_fee": {"$ref": "#/$defs/wei", "description": "Solver-determined fee in the sell token. 0 when absent."},
+        "uniform_clearing_prices": {
+          "type": "object", "description": "One price per token for the whole settlement.",
+          "patternProperties": {"^0x[0-9a-fA-F]{40}$": {"$ref": "#/$defs/wei"}}, "additionalProperties": false
+        }
+      }
+    },
+    "expected": {
+      "type": "object", "required": ["fee_stage", "score_stage"], "additionalProperties": false,
+      "properties": {
+        "fee_stage": {
+          "type": "object", "required": ["protocol_fees", "executed_after_fees", "fee_after_fees", "custom_clearing_prices"], "additionalProperties": false,
+          "description": "What the driver produces from the solution (driver fee application).",
+          "properties": {
+            "protocol_fees": {"type": "array", "items": {
+              "type": "object", "required": ["policy_index", "in_surplus_token", "in_sell_token"], "additionalProperties": false,
+              "properties": {
+                "policy_index": {"type": "integer", "minimum": 0},
+                "in_surplus_token": {"$ref": "#/$defs/wei", "description": "The surplus token is the buy token for a sell order and the sell token for a buy order."},
+                "in_sell_token": {"$ref": "#/$defs/wei"}
+              }}},
+            "executed_after_fees": {"$ref": "#/$defs/wei"},
+            "fee_after_fees": {"$ref": "#/$defs/wei", "description": "solver_fee plus all protocol fees, in the sell token."},
+            "custom_clearing_prices": {"type": "object", "required": ["sell", "buy"], "additionalProperties": false,
+              "description": "Per-trade prices after fees, as the driver encodes them.",
+              "properties": {"sell": {"$ref": "#/$defs/wei"}, "buy": {"$ref": "#/$defs/wei"}}},
+            "error": {"type": "string", "description": "Present when the driver rejects the trade; names the error variant."}
+          }
+        },
+        "score_stage": {
+          "type": "object", "required": ["user_surplus", "protocol_fees_recovered", "score_native"], "additionalProperties": false,
+          "description": "What winner-selection computes from the executed amounts (score = surplus plus protocol fees, in native token).",
+          "properties": {
+            "user_surplus": {"$ref": "#/$defs/wei", "description": "In the surplus token."},
+            "protocol_fees_recovered": {"type": "array", "items": {"$ref": "#/$defs/wei"}, "description": "Per policy, recovered from post-fee prices, in the surplus token. Same order as order.fee_policies."},
+            "score_native": {"$ref": "#/$defs/wei", "description": "Wei of native token."},
+            "error": {"type": "string", "description": "Present when winner-selection cannot score the order; names the error variant."}
+          }
+        },
+        "notes": {"type": "string", "description": "Where two copies of the arithmetic give different results, state each result and cite the lines."}
+      }
+    }
+  },
+  "$defs": {
+    "wei": {"type": "string", "pattern": "^[0-9]+$"},
+    "factor": {"type": "number", "minimum": 0, "exclusiveMaximum": 1}
+  }
+}
