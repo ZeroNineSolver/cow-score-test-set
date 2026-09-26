@@ -1,0 +1,15 @@
+[package]
+name = "cow-score-harness"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Checks each test case's score against cowprotocol/services winner-selection at the pinned commit"
+
+[dependencies]
+# The oracle. Pinned to the commit named in README.md; bump both together.
+winner-selection = { git = "https://github.com/cowprotocol/services", rev = "67cd3a16ad5b5cbfec16d8404ae038ee9e7019ed" }
+serde_json = "1"
+
+[[bin]]
+name = "check-vectors"
+path = "src/main.rs"

@@ -1,0 +1,40 @@
+name: check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  vectors:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Schema
+        run: |
+          pip install --quiet jsonschema
+          python replayers/python/validate.py vectors
+
+      - name: Hand vectors rebuild byte for byte from the replayer
+        run: |
+          python replayers/python/build_hand_vectors.py vectors
+          git diff --exit-code vectors
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      # No cache on purpose: this job's build time is the number the grant
+      # application quotes for a clean build on a free runner.
+      - name: Build harness (links winner-selection at the pinned commit)
+        working-directory: harness
+        run: |
+          start=$(date +%s)
+          cargo build --release --locked
+          echo "harness build: $(( $(date +%s) - start )) s" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Score every vector with winner-selection
+        run: harness/target/release/check-vectors vectors | tee -a "$GITHUB_STEP_SUMMARY"

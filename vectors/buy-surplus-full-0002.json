@@ -1,0 +1,81 @@
+{
+  "id": "buy-surplus-full-0002",
+  "version": "0.1.0",
+  "oracle": {
+    "repo": "cowprotocol/services",
+    "commit": "67cd3a16ad5b5cbfec16d8404ae038ee9e7019ed",
+    "generated_by": "hand",
+    "citations": [
+      "crates/driver/src/domain/competition/solution/fee.rs:42-81",
+      "crates/driver/src/domain/competition/solution/fee.rs:84-213",
+      "crates/driver/src/domain/competition/solution/trade.rs:129-166",
+      "crates/driver/src/domain/competition/solution/trade.rs:197-281",
+      "crates/driver/src/domain/competition/solution/trade.rs:287-355",
+      "crates/driver/src/domain/competition/solution/settlement.rs:290-305",
+      "crates/winner-selection/src/arbitrator.rs:313-362",
+      "crates/winner-selection/src/arbitrator.rs:367-426",
+      "crates/winner-selection/src/arbitrator.rs:444-473",
+      "crates/winner-selection/src/arbitrator.rs:539-632",
+      "crates/chain-types/src/lib.rs:43-47",
+      "crates/number/src/u256_ext.rs:105-135"
+    ]
+  },
+  "class": [
+    "buy",
+    "full-fill",
+    "policy-surplus"
+  ],
+  "order": {
+    "uid": "0xcb8ba451ee65a36d3f29c4c98e6d070af52c7bdd08ec92ad5d1b95deb8803358c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0ffffffff",
+    "side": "buy",
+    "sell_token": "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0",
+    "buy_token": "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0",
+    "sell_amount": "2560000000000000000",
+    "buy_amount": "5000000000000000000",
+    "partially_fillable": false,
+    "fee_policies": [
+      {
+        "kind": "surplus",
+        "cip": "CIP-38",
+        "factor": 0.2,
+        "max_volume_factor": 0.01
+      }
+    ]
+  },
+  "native_prices": {
+    "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0": "1000417000000000",
+    "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0": "500000061000000"
+  },
+  "solution": {
+    "executed": "5000000000000000000",
+    "solver_fee": "2000000000000000",
+    "uniform_clearing_prices": {
+      "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0": "1999870013",
+      "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0": "1000000123"
+    }
+  },
+  "expected": {
+    "fee_stage": {
+      "protocol_fees": [
+        {
+          "policy_index": 0,
+          "in_surplus_token": "11567439633787838",
+          "in_sell_token": "11567439633787838"
+        }
+      ],
+      "executed_after_fees": "5000000000000000000",
+      "fee_after_fees": "13567439633787838",
+      "custom_clearing_prices": {
+        "sell": "5000000000000000000",
+        "buy": "2513730241464848645"
+      }
+    },
+    "score_stage": {
+      "user_surplus": "46269758535151355",
+      "protocol_fees_recovered": [
+        "11567439633787838"
+      ],
+      "score_native": "56481645727614"
+    }
+  }
+}

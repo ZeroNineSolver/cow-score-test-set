@@ -1,0 +1,81 @@
+{
+  "id": "buy-volume-0004",
+  "version": "0.1.0",
+  "oracle": {
+    "repo": "cowprotocol/services",
+    "commit": "67cd3a16ad5b5cbfec16d8404ae038ee9e7019ed",
+    "generated_by": "hand",
+    "citations": [
+      "crates/driver/src/domain/competition/solution/fee.rs:42-81",
+      "crates/driver/src/domain/competition/solution/fee.rs:84-213",
+      "crates/driver/src/domain/competition/solution/trade.rs:129-166",
+      "crates/driver/src/domain/competition/solution/trade.rs:197-281",
+      "crates/driver/src/domain/competition/solution/trade.rs:287-355",
+      "crates/driver/src/domain/competition/solution/settlement.rs:290-305",
+      "crates/winner-selection/src/arbitrator.rs:313-362",
+      "crates/winner-selection/src/arbitrator.rs:367-426",
+      "crates/winner-selection/src/arbitrator.rs:444-473",
+      "crates/winner-selection/src/arbitrator.rs:539-632",
+      "crates/chain-types/src/lib.rs:43-47",
+      "crates/number/src/u256_ext.rs:105-135"
+    ]
+  },
+  "class": [
+    "buy",
+    "full-fill",
+    "policy-volume"
+  ],
+  "order": {
+    "uid": "0x8011865e444f28bdc2f94cdef0e762f9030a39dba7d771af208066ef958fbf82c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0ffffffff",
+    "side": "buy",
+    "sell_token": "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0",
+    "buy_token": "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0",
+    "sell_amount": "2100000000000000000",
+    "buy_amount": "4000000000000000000",
+    "partially_fillable": false,
+    "fee_policies": [
+      {
+        "kind": "volume",
+        "cip": "CIP-38",
+        "factor": 0.0002
+      }
+    ]
+  },
+  "native_prices": {
+    "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0": "1000417000000000",
+    "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0": "500000061000000"
+  },
+  "solution": {
+    "executed": "4000000000000000000",
+    "solver_fee": "1000000000000000",
+    "uniform_clearing_prices": {
+      "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0": "1999870013",
+      "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0": "1000000123"
+    }
+  },
+  "expected": {
+    "fee_stage": {
+      "protocol_fees": [
+        {
+          "policy_index": 0,
+          "in_surplus_token": "400226048292969",
+          "in_sell_token": "400226048292969"
+        }
+      ],
+      "executed_after_fees": "4000000000000000000",
+      "fee_after_fees": "1400226048292969",
+      "custom_clearing_prices": {
+        "sell": "4000000000000000000",
+        "buy": "2001530467513141614"
+      }
+    },
+    "score_stage": {
+      "user_surplus": "98469532486858386",
+      "protocol_fees_recovered": [
+        "400226048292969"
+      ],
+      "score_native": "94161686283106"
+    },
+    "notes": "The score stage recovers a buy-side volume fee with f/(1+f), not f/(1-f) (arbitrator.rs:565-568)."
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "id": "buy-price-improvement-0006",
+  "version": "0.1.0",
+  "oracle": {
+    "repo": "cowprotocol/services",
+    "commit": "67cd3a16ad5b5cbfec16d8404ae038ee9e7019ed",
+    "generated_by": "hand",
+    "citations": [
+      "crates/driver/src/domain/competition/solution/fee.rs:42-81",
+      "crates/driver/src/domain/competition/solution/fee.rs:84-213",
+      "crates/driver/src/domain/competition/solution/trade.rs:129-166",
+      "crates/driver/src/domain/competition/solution/trade.rs:197-281",
+      "crates/driver/src/domain/competition/solution/trade.rs:287-355",
+      "crates/driver/src/domain/competition/solution/settlement.rs:290-305",
+      "crates/winner-selection/src/arbitrator.rs:313-362",
+      "crates/winner-selection/src/arbitrator.rs:367-426",
+      "crates/winner-selection/src/arbitrator.rs:444-473",
+      "crates/winner-selection/src/arbitrator.rs:539-632",
+      "crates/chain-types/src/lib.rs:43-47",
+      "crates/number/src/u256_ext.rs:105-135",
+      "crates/driver/src/domain/competition/solution/fee.rs:249-291",
+      "crates/winner-selection/src/arbitrator.rs:478-534"
+    ]
+  },
+  "class": [
+    "buy",
+    "in-market",
+    "full-fill",
+    "policy-price-improvement",
+    "roundtrip-rounding"
+  ],
+  "order": {
+    "uid": "0x9fbd2783965700a8f7fd980330f47eb1d02fd018bdb942388c744186ceabf4c4c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0ffffffff",
+    "side": "buy",
+    "sell_token": "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0",
+    "buy_token": "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0",
+    "sell_amount": "2560000000000000000",
+    "buy_amount": "5000000000000000000",
+    "partially_fillable": false,
+    "quote": {
+      "sell_amount": "2505000000000000000",
+      "buy_amount": "5000000000000000000",
+      "fee": "3000000000000000"
+    },
+    "fee_policies": [
+      {
+        "kind": "price_improvement",
+        "cip": "CIP-38",
+        "factor": 0.5,
+        "max_volume_factor": 0.01
+      }
+    ]
+  },
+  "native_prices": {
+    "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0": "1000417000000000",
+    "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0": "500000061000000"
+  },
+  "solution": {
+    "executed": "5000000000000000000",
+    "solver_fee": "3000000000000000",
+    "uniform_clearing_prices": {
+      "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0": "1999870013",
+      "0xb0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0": "1000000123"
+    }
+  },
+  "expected": {
+    "fee_stage": {
+      "protocol_fees": [
+        {
+          "policy_index": 0,
+          "in_surplus_token": "2418599084469596",
+          "in_sell_token": "2418599084469596"
+        }
+      ],
+      "executed_after_fees": "5000000000000000000",
+      "fee_after_fees": "5418599084469596",
+      "custom_clearing_prices": {
+        "sell": "5000000000000000000",
+        "buy": "2505581400915530403"
+      }
+    },
+    "score_stage": {
+      "user_surplus": "54418599084469597",
+      "protocol_fees_recovered": [
+        "2418599084469597"
+      ],
+      "score_native": "55505083108473"
+    },
+    "notes": "The score stage's recovered fee differs from the driver's applied fee by rounding (policy 0: 2418599084469596 forward, 2418599084469597 recovered; surplus-token wei). Recovery works on post-fee amounts with f/(1-f) or f/(1+f) (arbitrator.rs:539-573)."
+  }
+}
