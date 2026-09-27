@@ -16,6 +16,7 @@ Status: ten hand-built test cases, checked in CI.
 - `vectors/` the test cases (CC0)
 - `replayers/` reference replayers (MIT)
 - `harness/` checks every test case's score against `winner-selection` (MIT)
+- `audits/` public-data audits of what `services` did on chain (MIT)
 
 ## Pinned oracle
 
