@@ -27,8 +27,8 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
-      # No cache on purpose: this job's build time is the number the grant
-      # application quotes for a clean build on a free runner.
+      # No cache on purpose, so the reported time is a clean build on a free
+      # runner.
       - name: Build harness (links winner-selection at the pinned commit)
         working-directory: harness
         run: |

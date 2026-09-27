@@ -15,7 +15,7 @@
         "repo": {"const": "cowprotocol/services"},
         "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
         "services_version": {"type": "string", "description": "Cargo package version of the autopilot at the commit, if any."},
-        "generated_by": {"enum": ["hand", "harness"], "description": "hand: built and cited by a person; harness: emitted by the generator."},
+        "generated_by": {"enum": ["hand", "harness"], "description": "hand: built and cited by a person; harness: emitted by a program that runs services code."},
         "citations": {"type": "array", "items": {"type": "string"}, "description": "path:line-range in services that justifies each expected value."}
       }
     },

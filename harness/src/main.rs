@@ -10,8 +10,8 @@
 //! vector names an error.
 //!
 //! `score` is the only public entry point, so the per-policy fees and the
-//! user surplus in a vector are not checked here. They are checked by the
-//! replayers and, from Milestone 2, by the generator.
+//! user surplus in a vector are not checked here; they come from the
+//! replayer.
 //!
 //! Usage: check-vectors <vectors dir>. Exit status 1 on any mismatch.
 

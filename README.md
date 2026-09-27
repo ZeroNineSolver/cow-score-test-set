@@ -7,15 +7,15 @@ solution, and states the protocol fees and the score that `cowprotocol/services`
 computes for it at a pinned commit. Any solver, in any language, can run the
 set against its own fee and score model.
 
-Status: bootstrap. Nothing here is released yet.
+Status: ten hand-built test cases, checked in CI.
 
 ## Layout
 
-- `docs/` the `services` fee and score map at the pinned commit, and the schema notes
+- `docs/` the `services` fee and score map at the pinned commit, and the conventions every test case follows
 - `schema/` the JSON schema for a test case
 - `vectors/` the test cases (CC0)
 - `replayers/` reference replayers (MIT)
-- `harness/` the generator that drives `services` (licence follows `winner-selection`)
+- `harness/` checks every test case's score against `winner-selection` (MIT)
 
 ## Pinned oracle
 
@@ -33,11 +33,10 @@ come from `replayers/python/cowscore.py`, a transcription of the cited
   `winner_selection::arbitrator::score` itself, linked from `services` at the
   pinned commit (`harness/`).
 
-What is not yet checked against `services`: the fee stage (the driver's
+What CI does not check against `services`: the fee stage (the driver's
 per-policy fees and post-fee amounts) and the score stage's per-policy
 breakdown, since `score` is the only public entry point of `winner-selection`.
-Those values are the replayer's. Driving the driver itself to check them is
-the generator's job.
+Those values come from the replayer.
 
 Run locally:
 
