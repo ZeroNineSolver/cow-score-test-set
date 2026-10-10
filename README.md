@@ -36,8 +36,10 @@ come from `replayers/python/cowscore.py`, a transcription of the cited
 
 What CI does not check against `services`: the fee stage (the driver's
 per-policy fees and post-fee amounts) and the score stage's per-policy
-breakdown, since `score` is the only public entry point of `winner-selection`.
-Those values come from the replayer.
+breakdown, since every fee and surplus helper in `winner-selection` is private
+(`protocol_fees`, `surplus_fee`, `volume_fee`, `calculate_custom_prices`);
+`score` is its public entry point for the final score. Those values come from
+the replayer.
 
 Run locally:
 
