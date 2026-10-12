@@ -41,7 +41,10 @@ breakdown, since every fee and surplus helper in `winner-selection` is private
 `score` is its public entry point for the final score. Those values come from
 the replayer.
 
-Run locally:
+Run locally. You need Python 3 (the schema check also needs `pip install
+jsonschema`), a stable Rust toolchain (the harness uses edition 2024, so rustc
+1.85 or newer; `harness/rust-toolchain.toml` selects stable for rustup), and
+network access on the first build to fetch `services` at the pinned commit.
 
 ```
 python3 replayers/python/build_hand_vectors.py vectors
